@@ -1,6 +1,8 @@
+import Experience from "@/pages/Experience/Experience";
 import App from "../App";
 import Home from "../pages/Home/Home/Home";
 import { createBrowserRouter } from "react-router-dom";
+import Service from "@/pages/Service/Service";
 
 export const router = createBrowserRouter([
   {
@@ -13,8 +15,12 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/dummy",
-        element: <div>This is a dummy page</div>,
+        path: "/experiences",
+        element: <Experience />,
+      },
+      {
+        path: "/services",
+        element: <Service />,
       },
     ],
   },
