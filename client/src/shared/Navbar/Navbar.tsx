@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Bell, Globe, Home, Menu, Search } from "lucide-react";
+import { Bell, Globe, Home, Menu, Search, X } from "lucide-react";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Link } from "react-router";
 
 const Navbar = () => {
   const [activeTab, setActiveTab] = useState("Homes");
   const [showModal, setShowModal] = useState(false);
+  const [searchRef, setSearchRef] = useState("");
 
   const tabs = useMemo(
     () => [
@@ -36,21 +37,30 @@ const Navbar = () => {
         name: "Where",
         placeholder: "Where",
         description: "Search destinations",
+        input: true,
       },
       {
         name: "Check in",
         placeholder: "Check in",
         description: "Add Date",
+        input: false,
       },
       {
         name: "Check out",
         placeholder: "Check out",
         description: "Add Date",
+        input: false,
       },
-      { name: "Who", placeholder: "Who", description: "Add Guests" },
+      {
+        name: "Who",
+        placeholder: "Who",
+        description: "Add Guests",
+        input: false,
+      },
     ],
     []
   );
+
   const [activeSearchTab, setActiveSearchTab] = useState("");
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const searchTabContainerRef = useRef<HTMLDivElement>(null);
@@ -84,32 +94,11 @@ const Navbar = () => {
     };
   }, []);
 
-  const mobileTabs = [
-    {
-      name: "Homes",
-      icon: <Home className="w-8 h-8" />,
-      href: "/",
-      badge: false,
-    },
-    {
-      name: "Experiences",
-      icon: <span className="text-3xl">🎈</span>,
-      href: "/experiences",
-      badge: true,
-    },
-    {
-      name: "Services",
-      icon: <Bell className="w-8 h-8" />,
-      href: "/services",
-      badge: true,
-    },
-  ];
-
   return (
     <>
       <header className="w-full shadow-sm bg-[#fbfbfb] sticky top-0 z-50">
         {/* Mobile Navbar */}
-        <div className="w-full bg-white sticky top-0 z-50 md:hidden items-center border-4">
+        <div className="w-full bg-white md:hidden items-center">
           <div className="flex flex-col items-center px-4 pt-3 pb-2">
             {/* Search Bar */}
             <button
@@ -129,7 +118,7 @@ const Navbar = () => {
           </div>
 
           {/* Tabs */}
-          <div className="flex items-center space-x-6 relative lg:ml-28">
+          <div className="flex items-center space-x-1 md:space-x-6 relative ml-0 lg:ml-28 w-full">
             {tabs.map((tab, idx) => (
               <button
                 key={tab.name}
@@ -191,18 +180,43 @@ const Navbar = () => {
                 <button
                   key={idx}
                   onClick={() => setActiveSearchTab(tab.name)}
-                  className={`flex-1 px-4 py-2 text-sm font-medium outline-none transition-colors duration-200 cursor-pointer
+                  className={`flex-1 px-4 py-2 text-sm font-medium outline-none  transition-colors duration-200 cursor-pointer
                   ${
                     activeSearchTab === tab.name
                       ? "text-black bg-white rounded-2xl shadow-md"
                       : `${
                           activeSearchTab
                             ? "bg-[#dddddd] rounded-2xl hover:bg-white"
-                            : "bg-white rounded-2xl"
+                            : "bg-white rounded-2xl hover:bg-[#dddddd]"
                         }`
                   }`}>
                   {tab.name}
-                  <div className="text-xs font-normal">{tab.description}</div>
+                  <div className="relative">
+                    {tab.input && (
+                      <input
+                        type="text"
+                        placeholder={tab.description}
+                        className="rounded-lg p-1 outline-none"
+                        value={searchRef}
+                        onChange={(e) => setSearchRef(e.target.value)}
+                      />
+                    )}
+                    {activeSearchTab && tab.input === true && searchRef && (
+                      <span className="absolute -top-2 right-0 p-1 cursor-pointer hover:bg-gray-200 rounded-full">
+                        <X
+                          size={16}
+                          onClick={() => {
+                            setSearchRef("");
+                          }}
+                        />
+                      </span>
+                    )}
+                  </div>
+                  {!tab.input && (
+                    <div className="text-xs text-gray-500">
+                      {tab.placeholder}
+                    </div>
+                  )}
                 </button>
               ))}
             </div>
@@ -213,37 +227,37 @@ const Navbar = () => {
             </Button>
           </div>
         </div>
-      </header>
 
-      {/* Search Modal */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
-          <div className="bg-white rounded-2xl shadow-lg w-full max-w-md mx-4 p-6">
-            <h2 className="text-lg font-semibold mb-4">Search</h2>
-            {/* Add your search form or inputs here */}
-            <input
-              type="text"
-              placeholder="Where are you going?"
-              className="w-full border rounded-lg px-3 py-2 mb-3"
-            />
-            <input
-              type="date"
-              className="w-full border rounded-lg px-3 py-2 mb-3"
-            />
-            <input
-              type="number"
-              placeholder="Guests"
-              className="w-full border rounded-lg px-3 py-2 mb-3"
-            />
-            <Button
-              className="w-full bg-pink-600 text-white rounded-full mt-2"
-              onClick={() => setShowModal(false)}>
-              <Search className="w-4 h-4 mr-2" />
-              Search
-            </Button>
+        {/* Search Modal */}
+        {showModal && (
+          <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
+            <div className="bg-white rounded-2xl shadow-lg w-full max-w-md mx-4 p-6">
+              <h2 className="text-lg font-semibold mb-4">Search</h2>
+              {/* Add your search form or inputs here */}
+              <input
+                type="text"
+                placeholder="Where are you going?"
+                className="w-full border rounded-lg px-3 py-2 mb-3"
+              />
+              <input
+                type="date"
+                className="w-full border rounded-lg px-3 py-2 mb-3"
+              />
+              <input
+                type="number"
+                placeholder="Guests"
+                className="w-full border rounded-lg px-3 py-2 mb-3"
+              />
+              <Button
+                className="w-full bg-pink-600 text-white rounded-full mt-2"
+                onClick={() => setShowModal(false)}>
+                <Search className="w-4 h-4 mr-2" />
+                Search
+              </Button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </header>
     </>
   );
 };
