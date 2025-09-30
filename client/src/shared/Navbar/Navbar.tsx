@@ -96,7 +96,7 @@ const Navbar = () => {
 
   return (
     <>
-      <header className="w-full shadow-sm bg-[#fbfbfb] sticky top-0 z-50">
+      <header className="w-full shadow-sm bg-[#fbfbfb] sticky top-0 z-50 px-0 md:px-8">
         {/* Mobile Navbar */}
         <div className="w-full bg-white md:hidden items-center">
           <div className="flex flex-col items-center px-4 pt-3 pb-2">
@@ -118,7 +118,7 @@ const Navbar = () => {
           </div>
 
           {/* Tabs */}
-          <div className="flex items-center space-x-1 md:space-x-6 relative ml-0 lg:ml-28 w-full">
+          <div className="flex items-center space-x-1 md:space-x-6 relative ml-0 lg:ml-28 sm:w-full md:w-auto">
             {tabs.map((tab, idx) => (
               <button
                 key={tab.name}
